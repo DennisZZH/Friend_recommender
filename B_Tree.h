@@ -16,11 +16,9 @@ class userInfo;
 class B_Tree{
 
 struct treeNode{
-	treeNode(){
-		perms = new int[3];
-		nodeChildren = new nodeChildren[4];
-		leafChildren = new leafChildren[4];
-	}
+
+	treeNode();
+
 	int perms[];
 	treeNode* nodeChildren[];
 	treeLeaf* leafChildren[];
@@ -30,6 +28,15 @@ struct treeNode{
 };
 
 struct treeLeaf{
+
+	treeLeaf(userInfo user);			// invariant: userone must always be smaller than usertwo
+
+	void insert(userInfo user);
+
+	int getSmallerPerm();						// return the smaller perm
+
+	int getLargerPerm();						// return the larger perm
+
 	userInfo* userOne;
 	userInfo* userTwo;
 	bool isLeafFull = false;

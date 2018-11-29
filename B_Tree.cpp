@@ -9,6 +9,12 @@
 
 using namespace std;
 
+	treeNode::treeNode(){
+		perms = new int[3];
+		nodeChildren = new nodeChildren[4];
+		leafChildren = new leafChildren[4];
+	}
+
 	B_Tree::B_Tree(){
 		this->rootNode = NULL;
 		this->rootLeaf = NULL;
@@ -55,10 +61,12 @@ using namespace std;
 			}
 		}
 		else if( isOnlyLeaf == false){
-			treeLeaf* dest = find_leaf_by_index(user.get_perm(), rootNode);				// find the place this user belong to
-			if(dest->isFull == false){						// if there is place available, put it in
+			treeLeaf* dest = find_leaf_by_index(user.get_perm(), rootNode);				
+			if(dest->isFull == false){						
 				dest->userTwo = new userInfo(user);
-			}else{}
+			}else{
+
+			}
 
 
 
@@ -68,15 +76,102 @@ using namespace std;
 
 
 
-	treeLeaf* B_Tree::find_leaf_by_index(int perm, treeNode* root){				// given a root ptr and a perm, find the appropriate leaf that the perm should be in
 
-		if(root->isAboveLeaf == true){					// base case: when root is the ptr to a node just above leaf
-			if(root->indexUsed == 1){
-				if(perm < root->perms[0]){
-					return root->leafChildren[0];
-				}else{
-					return root->leafChildren[1];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	void B_Tree::find_leaf_by_index(userInfo user, treeNode* root){				
+
+		int perm = user.get_perm();
+
+		if(root->isAboveLeaf == true){					// at the level of node that above leaves; base case
+
+			if(root->indexUsed == 1){						// if there is only one index available, which means this node has 2 children leaves
+
+				if( perm < root->perms[0]){						// if perm we want to insert is smaller than this index, we go to the right pointer (smaller side)
+
+					if(root->leafChildren[0]->isLeafFull == false){			// go to the correct leaf, if it is not full, just insert
+
+						root->leafChildren[0]->insert(user);
+
+					}else{													// if the correct leaf is full
+						if(perm > root->leafChildren[0]->getLargerPerm()){				// the case that perm we want to insert is greater than the larger perm of the leaf
+
+							root->leafChildren[2] = root->leafChildren[1];				// allocate a new leaf for the perm
+
+							root->leafChildren[1] = new treeLeaf(user);
+
+							root->perm[0] = perm;										// adjust index
+
+							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+
+						}else if(perm < root->leafChildren[0]->getLargerPerm() && perm > root->leafChildren[0]->getSmallerPerm()){				// the case that perm is in between of the largerer and smaller user perms
+
+							root->leafChildren[2] = root->leafChildren[1];																		// push the exsiting larger user to a new leaf
+
+							root->leafChildren[1] = new treeLeaf(*(root->leafChildren[0]->userTwo));
+
+							root->leafChildren[0]->userTwo = new userInfo(user);
+
+							root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+
+							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+
+						}else if(perm < root->leafChildren[0]->getSmallerPerm()){																// the case that perm is smaller than the smaller user perm
+
+							root->leafChildren[2] = root->leafChildren[1];																		// allocate a new leaf on the left for the perm
+
+							root->leafChildren[1] = root->leafChildren[0];
+
+							root->leafChildren[0] = new treeLeaf(user);
+
+							root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+
+							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+
+						}
+					}
+				}else if( perm > root->perms[0]){
+
+					if(root->leafChildren[1]->isLeafFull == false){				// go to the correct leaf, if it is not full, just insert
+
+						root->leafChildren[1]->insert(user);
+
+					}else{														//if the correct leaf is full
+						
+						if(perm < root->leafChildren[1]->getLargerPerm()){
+
+						}else if(perm > root->leafChildren[1]->getLargerPerm()){
+
+						}
+
+					}
+					
+
 				}
+				
+
+
 			}else if(root->indexUsed == 2){
 				if(perm < root->perms[0]){
 					return root->leafChildren[0];
