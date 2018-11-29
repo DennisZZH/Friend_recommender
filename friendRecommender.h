@@ -8,7 +8,7 @@
 #include <string>
 
 #include "B_Tree.h"
-#include "Graph.h"
+#include "Relation_Graph.h"
 #include "userInfo.h"
 
 using namespace std;
@@ -35,9 +35,9 @@ public:
 	
 private:
 	
-	B_Tree tree;
+	B_Tree *tree;
 
-	Graph relation;
+	Relation_Graph *graph;
 
 };
 #endif
