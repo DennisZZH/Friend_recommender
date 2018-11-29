@@ -9,7 +9,7 @@
 
 #include "B_Tree.h"
 #include "Graph.h"
-#include "userInfo"
+#include "userInfo.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ public:
 
 	friendRecommender();		// constructor
 
-	void add_a_user(userInfo user, list<int> friends);
+	void add_a_user(userInfo user, vector<int> friends);
 
 	bool find_a_user(int perm);
 
