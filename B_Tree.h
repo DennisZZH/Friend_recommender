@@ -16,6 +16,7 @@ class userInfo;
 class B_Tree{
 
 struct treeNode{
+	struct treeLeaf; 
 
 	treeNode();
 
@@ -62,24 +63,3 @@ private:
 
 };
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
