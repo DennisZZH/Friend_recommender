@@ -1,4 +1,4 @@
-//Author: Zihao Zhang
+//Author: Zihao Zhang, Jiajun Wan
 //Date: 11.25.2018
 #include "graphNode.h"
 
