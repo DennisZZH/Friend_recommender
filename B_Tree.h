@@ -1,7 +1,7 @@
 //Author: Zihao Zhang
 //Date: 11.25
-#ifndef BTREE.H
-#define BTREE.H
+#ifndef B_TREE
+#define B_TREE
 
 #include <cstdlib>
 #include <iostream>
