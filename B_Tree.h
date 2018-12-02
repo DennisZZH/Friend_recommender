@@ -26,6 +26,8 @@ struct treeNode{
 	bool isAboveLeaf = true;
 	bool isNodeFull = false;
 	int indexUsed = 0;
+
+	treeNode* parent;
 };
 
 struct treeLeaf{
@@ -41,6 +43,7 @@ struct treeLeaf{
 	userInfo* userOne;
 	userInfo* userTwo;
 	bool isLeafFull = false;
+
 };
 
 public:
@@ -51,7 +54,9 @@ public:
 
 	bool find_user(int perm);
 
-	const treeLeaf* find_leaf_by_index(int perm, treeNode* root);
+	const void find_and_insert(int perm, treeNode* root);
+
+	const void break_up(treeNode* current);
 
 private:
 	
