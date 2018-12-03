@@ -11,8 +11,33 @@ using namespace std;
 
 	treeNode::treeNode(){
 		perms = new int[3];
+		for(int i = 0; i < 3; i ++){
+			perm[i] = 0;
+		}
 		nodeChildren = new nodeChildren[4];
 		leafChildren = new leafChildren[4];
+	}
+
+	treeLeaf::treeLeaf(userInfo user){
+		userOne = new userInfo(user);
+	}
+
+	void treeLeaf::insert(userInfo user){
+		perm = user.get_perm();
+		if(perm > userOne->get_perm()){
+			userTwo = new userInfo(user);
+		}else{
+			userTwo = userOne;
+			userOne = new userInfo(user);
+		}
+	}
+
+	int treeLeaf::getSmallerPerm(){
+		return userOne->get_perm();
+	}
+
+	int treeLeaf::getLargerPerm(){
+		return userTwo->get_perm();
 	}
 
 	B_Tree::B_Tree(){
@@ -27,7 +52,7 @@ using namespace std;
 				rootLeaf = new treeLeaf(user);
 			}else if(rootLeaf != NULL && rootLeaf->isFull == false){						// second insertion, leaf full
 				rootLeaf->insert(user);
-				rootLeaf->isFull = true;
+				rootLeaf->isLeafFull = true;
 			}else if(rootLeaf != NULL && rootLeaf->isFull == true){			// third insertion, object number exceed leaf size by 1, need to use treeNode now
 				rootNode = new treeNode();
 				if(user.get_perm() < rootLeaf->getSmallerPerm()){		// third user's perm is the smallest
@@ -396,6 +421,8 @@ using namespace std;
 
 						root->leafChildren[0]->insert(user);
 
+						root->leafChildren[0]-isLeafFull = true;
+
 					} else {                                                    // if the correct leaf is full
 						if (perm >
 						    root->leafChildren[0]->getLargerPerm()) {                // the case that perm we want to insert is greater than the larger perm of the leaf
@@ -439,6 +466,8 @@ using namespace std;
 
 						root->leafChildren[1]->insert(user);
 
+						root->leafChildren[1]-isLeafFull = true;
+
 					} else {                                                        //if the correct leaf is full
 
 						if (perm <
@@ -475,6 +504,8 @@ using namespace std;
 					    false) {                    // if it is not full, just insert
 
 						root->leafChildren[0]->insert(user);
+
+						root->leafChildren[0]-isLeafFull = true;
 
 					} else {                                                            // if it is full
 
@@ -527,6 +558,8 @@ using namespace std;
 
 							root->leafChildren[1]->insert(user);
 
+							root->leafChildren[1]-isLeafFull = true;
+
 						} else {                                                            // if it is full
 
 							if (perm < root->leafChildren[1]->getLargerPerm()) {
@@ -564,6 +597,8 @@ using namespace std;
 
 							root->leafChildren[2]->insert(user);
 
+							root->leafChildren[2]-isLeafFull = true;
+
 						} else {
 
 							if (perm < root->leafChildren[2]->getLargerPerm()) {
@@ -599,6 +634,8 @@ using namespace std;
 
 								root->leafChildren[0]->insert(user);
 
+								root->leafChildren[0]-isLeafFull = true;
+
 							} else {
 
 								break_up(root);
@@ -613,6 +650,8 @@ using namespace std;
 							    false) {                    // if it is not full, just insert
 
 								root->leafChildren[1]->insert(user);
+
+								root->leafChildren[1]-isLeafFull = true;
 
 							} else {
 
@@ -629,6 +668,8 @@ using namespace std;
 
 								root->leafChildren[2]->insert(user);
 
+								root->leafChildren[2]-isLeafFull = true;
+
 							} else {
 
 								break_up(root);
@@ -643,6 +684,8 @@ using namespace std;
 							    false) {                    // if it is not full, just insert
 
 								root->leafChildren[3]->insert(user);
+
+								root->leafChildren[3]-isLeafFull = true;
 
 							} else {
 
@@ -694,4 +737,30 @@ using namespace std;
 		userInfo user;
 		return user;    //stub
 	}
+
+	int B_Tree::get_node_index(treeNode* current){
+		if(current->isAboveLeaf == true){
+			return current->leafChildren[0]->getSmallerPerm();
+		}else{
+			return get_node_index(current->nodeChildren[0]);
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

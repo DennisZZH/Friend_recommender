@@ -21,9 +21,9 @@ struct treeNode{
 
 	treeNode();
 
-	int perms[];
-	treeNode* nodeChildren[];
-	treeLeaf* leafChildren[];
+	int perms[3];
+	treeNode* nodeChildren[4];
+	treeLeaf* leafChildren[4];
 	bool isAboveLeaf = true;
 	bool isNodeFull = false;
 	int indexUsed = 0;
@@ -32,8 +32,6 @@ struct treeNode{
 };
 
 struct treeLeaf{
-
-	treeLeaf();
 
 	treeLeaf(userInfo user);			// invariant: userone must always be smaller than usertwo
 
@@ -61,7 +59,7 @@ public:
 
 	void break_up(treeNode* current);				// general break up funtion, used when a node of a leaf is full and need to be broken down
 
-	void break_when_parent_not_full(treeNode* current)	// break function, under the condition that the current node's parent is not full, thus just break the current node, and reallocate its siblings
+	void break_when_parent_not_full(treeNode* current);	// break function, under the condition that the current node's parent is not full, thus just break the current node, and reallocate its siblings
 
 	int get_node_index(treeNode* current);			// given a treeNode pointer, find the smaller perm of left most leaf under that treeNode.(find the smallest perm under that node) 
 
