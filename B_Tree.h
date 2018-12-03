@@ -1,6 +1,9 @@
 //Author: Zihao Zhang
 //Date: 11.25
 
+#ifndef B_TREE
+#define B_TREE
+
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -73,3 +76,4 @@ private:
 	bool isOnlyLeaf;
 
 };
+#endif
