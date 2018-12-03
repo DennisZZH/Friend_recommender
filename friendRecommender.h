@@ -16,12 +16,6 @@
 
 using namespace std;
 
-class B_Tree;
-
-class Graph;
-
-class userInfo;
-
 class friendRecommender{
 
 public:
