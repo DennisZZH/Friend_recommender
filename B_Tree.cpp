@@ -56,324 +56,322 @@ using namespace std;
 		}
 	}
 
+	void B_Tree::break_when_parent_not_full(treeNode* current){
+	if(current->parent->indexUsed == 1){
+		if(current == current->parent->nodeChildren[0]){
+			if(current->isAboveLeaf == true){
 
+				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
+
+				current->parengt->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1]->parent = current->parent;
+				current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
+				current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
+				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[1]->indexUsed++;
+
+				current->leafChildren[2] = NULL;
+				current->leafChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->indexUsed++;
+
+			}else{
+
+				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
+
+				current->parengt->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1]->parent = current->parent;
+				current->parent->nodeChildren[1]->isAboveLeaf = false;
+				current->parent->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
+				current->parent->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
+				current->parent->nodeChildren[1]->perms[0] = get_node_index(current->parent->nodeChildren[1]->nodeChildren[1]);
+				current->parent->nodeChildren[1]->indexUsed++;
+
+				current->nodeChildren[2] = NULL;
+				current->nodeChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->indexUsed++;
+
+			}
+
+		}else if(current == current->parent->nodeChildren[1]){
+			if(current->isAboveLeaf == true){
+
+				current->parengt->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2]->parent = current->parent;
+				current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
+				current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
+				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[2]->indexUsed++;
+
+				current->leafChildren[2] = NULL;
+				current->leafChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->indexUsed++;
+
+			}else{
+
+				current->parengt->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2]->parent = current->parent;
+				current->parent->nodeChildren[2]->isAboveLeaf = false;
+				current->parent->nodeChildren[2]->nodeChildren[0] = current->nodeChildren[2];
+				current->parent->nodeChildren[2]->nodeChildren[1] = current->nodeChildren[3];
+				current->parent->nodeChildren[2]->perms[0] = get_node_index(current->parent->nodeChildren[2]->nodeChildren[1]);
+				current->parent->nodeChildren[2]->indexUsed++;
+
+				current->nodeChildren[2] = NULL;
+				current->nodeChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->indexUsed++;
+
+			}
+		}
+
+	}else if(current->parent->indexUsed == 2){
+		if(current == current->parent->nodeChildren[0]){
+			if(current->isAboveLeaf == true){
+
+				current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
+				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
+
+				current->parent->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1]->parent = current->parent;
+				current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
+				current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
+				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[1]->indexUsed++;
+
+				current->leafChildren[2] = NULL;
+				current->leafChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+
+			}else{
+
+				current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
+				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
+
+				current->parent->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1]->parent = current->parent;
+				current->parent->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
+				current->parent->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
+				current->parent->nodeChildren[1]->perms[0] = get_node_index(current->parent->nodeChildren[1]->nodeChildren[1]);
+				current->parent->nodeChildren[1]->indexUsed++;
+
+				current->nodeChildren[2] = NULL;
+				current->nodeChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+			}
+
+		}else if(current == current->parent->nodeChildren[1]){
+			if(current->isAboveLeaf == true){
+
+				current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
+
+				current->parent->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2]->parent = current->parent;
+				current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
+				current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
+				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[2]->indexUsed++;
+
+				current->leafChildren[2] = NULL;
+				current->leafChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+			}else{
+
+				current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
+
+				current->parent->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2]->parent = current->parent;
+				current->parent->nodeChildren[2]->nodeChildren[0] = current->nodeChildren[2];
+				current->parent->nodeChildren[2]->nodeChildren[1] = current->nodeChildren[3];
+				current->parent->nodeChildren[2]->perms[0] = get_node_index(current->parent->nodeChildren[2]->nodeChildren[1]);
+				current->parent->nodeChildren[2]->indexUsed++;
+
+				current->nodeChildren[2] = NULL;
+				current->nodeChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+			}
+
+		}else if(current == current->parent->nodeChildren[2]){
+			if(current->isAboveLeaf == true){
+
+				current->parent->nodeChildren[3] = new treeNode();
+				current->parent->nodeChildren[3]->parent = current->parent;
+				current->parent->nodeChildren[3]->leafChildren[0] = current->leafChildren[2];
+				current->parent->nodeChildren[3]->leafChildren[1] = current->leafChildren[3];
+				current->parent->nodeChildren[3]->perms[0] = current->parent->nodeChildren[3]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[3]->indexUsed++;
+
+				current->leafChildren[2] = NULL;
+				current->leafChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+			}else{
+
+				current->parent->nodeChildren[3] = new treeNode();
+				current->parent->nodeChildren[3]->parent = current->parent;
+				current->parent->nodeChildren[3]->nodeChildren[0] = current->nodeChildren[2];
+				current->parent->nodeChildren[3]->nodeChildren[1] = current->nodeChildren[3];
+				current->parent->nodeChildren[3]->perms[0] = get_node_index(current->parent->nodeChildren[3]->nodeChildren[1]);
+				current->parent->nodeChildren[3]->indexUsed++;
+
+				current->nodeChildren[2] = NULL;
+				current->nodeChildren[3] = NULL;
+				current->perm[1] = 0;
+				current->perm[2] = 0;
+				current->indexUsed = 1;
+				current->isNodefull = false;
+
+				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
+				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
+				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
+				current->parent->indexUsed++;
+				current->parent->isNodefull = true;
+
+			}
+		}
+	}
+}
 
 	void B_Tree:: break_up(treeNode* current){
 
 		if(current->parent == NULL){
 			if(current->isAboveLeaf == true){
 
-				current = new treeNode();
-				current->isAboveLeaf = false;
+				rootNode = new treeNode();
+				rootNode->isAboveLeaf = false;
 
-				current->nodeChildren[0] = new treeNode();
-				current->nodeChildren[0]->parent = current;
-				current->nodeChildren[0]->leafChildren[0] = new treeLeaf(rootNode->leafChildren[0]);
-				current->nodeChildren[0]->leafChildren[1] = new treeLeaf(rootNode->leafChildren[1]);
-				current->nodeChildren[0]->perms[0] = current->nodeChildren[0]->leafChildren[1]->getSmallerPerm();
-				current->nodeChildren[0]->indexUsed++;
+				rootNode->nodeChildren[1] = new treeNode();
+				rootNode->nodeChildren[1]->parent = rootNode;
+				rootNode->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
+				rootNode->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
+				rootNode->nodeChildren[1]->perms[0] = rootNode->nodeChildren[1]->leafChildren[1]->getSmallerPerm();
+				rootNode->nodeChildren[1]->indexUsed++;
 
-				current->nodeChildren[1] = new treeNode();
-				current->nodeChildren[1]->parent = current;
-				current->nodeChildren[1]->leafChildren[0] = new treeLeaf(rootNode->leafChildren[2]);
-				current->nodeChildren[1]->leafChildren[1] = new treeLeaf(rootNode->leafChildren[3]);
-				current->nodeChildren[1]->perm[0] = current->nodeChildren[1]->leafChildren[1]->getSmallerPerm();
-				current->nodeChildren[1]->indexUsed++;
+				rootNode->nodeChildren[0] = current;
+				rootNode->nodeChildren[0]->parent = rootNode;
+				rootNode->nodeChildren[0]->leafChildren[2] = NULL;
+				rootNode->nodeChildren[0]->leafChildren[3] = NULL;
+				rootNode->nodeChildren[0]->perm[1] = 0;
+				rootNode->nodeChildren[0]->perm[2] = 0;
+				rootNode->nodeChildren[0]->indexUsed = 1;
+				rootNode->nodeChildren[0]->isNodefull = false;
 
-				current->perm[0] = current->nodeChildren[1]->leafChildren[0]->getSmallerPerm();
-				current->indexUsed++;
-
-				delete rootNode;
-				rootNode = current;
+				rootNode->perm[0] = rootNode->nodeChildren[1]->leafChildren[0]->getSmallerPerm();
+				rootNode->indexUsed++;
 
 			}else if(current->isAboveLeaf == false){
 
-				current = new treeNode();
-				current->isAboveLeaf = false;
+				rootNode = new treeNode();
+				rootNode->isAboveLeaf = false;
 
-				current->nodeChildren[0] = new treeNode();
-				current->nodeChildren[0]->isAboveLeaf = false;
-				current->nodeChildren[0]->parent = current;
-				current->nodeChildren[0]->nodeChildren[0] = new treeNode(rootNode->nodeChildren[0]);
-				current->nodeChildren[0]-nodeChildren[0]->parent = current->nodeChildren[0];
-				current->nodeChildren[0]->leafChildren[1] = new treeNode(rootNode->nodeChildren[1]);
-				current->nodeChildren[0]-nodeChildren[1]->parent = current->nodeChildren[0];
-				current->nodeChildren[0]->perms[0] = get_node_index(current->nodeChildren[0]);				//error
-				current->nodeChildren[0]->indexUsed++;
+				rootNode->nodeChildren[1] = new treeNode();
+				rootNode->nodeChildren[1]->isAboveLeaf = false;
+				rootNode->nodeChildren[1]->parent = rootNode;
+				rootNode->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
+				rootNode->nodeChildren[1]-nodeChildren[0]->parent = rootNode->nodeChildren[1];
+				rootNode->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
+				rootNode->nodeChildren[1]-nodeChildren[1]->parent = rootNode->nodeChildren[1];
+				rootNode->nodeChildren[1]->perms[0] = get_node_index(rootNode->nodeChildren[1]->nodeChildren[1]);				//error
+				rootNode->nodeChildren[1]->indexUsed++;
 
-				current->nodeChildren[1] = new treeNode();
-				current->nodeChildren[1]->isAboveLeaf = false;
-				current->nodeChildren[1]->parent = current;
-				current->nodeChildren[1]->nodeChildren[0] = new treeNode(rootNode->nodeChildren[2]);
-				current->nodeChildren[1]-nodeChildren[0]->parent = current->nodeChildren[1];
-				current->nodeChildren[1]->leafChildren[1] = new treeNode(rootNode->nodeChildren[3]);
-				current->nodeChildren[1]-nodeChildren[1]->parent = current->nodeChildren[1];
-				current->nodeChildren[1]->perms[0] = get_node_index(current->nodeChildren[1]);
-				current->nodeChildren[1]->indexUsed++;
+				rootNode->nodeChildren[0] = current;
+				rootNode->nodeChildren[0]->parent = rootNode;
+				rootNode->nodeChildren[0]->nodeChildren[2] = NULL;
+				rootNode->nodeChildren[0]-nodeChildren[3] = NULL;
+				rootNode->nodeChildren[0]->perms[1] = 0;
+				rootNode->nodeChildren[0]->perms[2] = 0;
+				rootNode->nodeChildren[0]->indexUsed = 1;
+				rootNode->nodeChildren[0]->isNodefull = false;
 
-				current->perm[0] = get_node_index(current);
-				current->indexUsed++;
-
-				delete rootNode;
-				rootNode = current;
+				rootNode->perm[0] = get_node_index(rootNode->nodeChildren[1]);
+				rootNode->indexUsed++;
 
 			}
 
 		}else{
 			if(current->parent->isNodefull == false){
-				if(current->parent->indexUsed == 1){
-					if(current == current->parent->nodeChildren[0]){
-						if(current->isAboveLeaf == true){
 
-							current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
-
-							current->parengt->nodeChildren[1] = new treeNode();
-							current->parent->nodeChildren[1]->parent = current->parent;
-							current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
-							current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
-							current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
-							current->parent->nodeChildren[1]->indexUsed++;
-
-							current->leafChildren[2] = NULL;
-							current->leafChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->indexUsed++;
-
-						}else{
-
-							current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
-
-							current->parengt->nodeChildren[1] = new treeNode();
-							current->parent->nodeChildren[1]->parent = current->parent;
-							current->parent->nodeChildren[1]->isAboveLeaf = false;
-							current->parent->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
-							current->parent->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
-							current->parent->nodeChildren[1]->perms[0] = get_node_index(current->parent->nodeChildren[1]->nodeChildren[1]);
-							current->parent->nodeChildren[1]->indexUsed++;
-
-							current->nodeChildren[2] = NULL;
-							current->nodeChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->indexUsed++;
-
-						}
-
-					}else if(current == current->parent->nodeChildren[1]){
-						if(current->isAboveLeaf == true){
-
-							current->parengt->nodeChildren[2] = new treeNode();
-							current->parent->nodeChildren[2]->parent = current->parent;
-							current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
-							current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
-							current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
-							current->parent->nodeChildren[2]->indexUsed++;
-
-							current->leafChildren[2] = NULL;
-							current->leafChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->indexUsed++;
-
-						}else{
-
-							current->parengt->nodeChildren[2] = new treeNode();
-							current->parent->nodeChildren[2]->parent = current->parent;
-							current->parent->nodeChildren[2]->isAboveLeaf = false;
-							current->parent->nodeChildren[2]->nodeChildren[0] = current->nodeChildren[2];
-							current->parent->nodeChildren[2]->nodeChildren[1] = current->nodeChildren[3];
-							current->parent->nodeChildren[2]->perms[0] = get_node_index(current->parent->nodeChildren[2]->nodeChildren[1]);
-							current->parent->nodeChildren[2]->indexUsed++;
-
-							current->nodeChildren[2] = NULL;
-							current->nodeChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->indexUsed++;
-
-						}
-					}
-
-				}else if(current->parent->indexUsed == 2){
-					if(current == current->parent->nodeChildren[0]){
-						if(current->isAboveLeaf == true){
-
-							current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
-							current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
-
-							current->parent->nodeChildren[1] = new treeNode();
-							current->parent->nodeChildren[1]->parent = current->parent;
-							current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
-							current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
-							current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
-							current->parent->nodeChildren[1]->indexUsed++;
-
-							current->leafChildren[2] = NULL;
-							current->leafChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-
-						}else{
-
-							current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
-							current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
-
-							current->parent->nodeChildren[1] = new treeNode();
-							current->parent->nodeChildren[1]->parent = current->parent;
-							current->parent->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
-							current->parent->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
-							current->parent->nodeChildren[1]->perms[0] = get_node_index(current->parent->nodeChildren[1]->nodeChildren[1]);
-							current->parent->nodeChildren[1]->indexUsed++;
-
-							current->nodeChildren[2] = NULL;
-							current->nodeChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-						}
-
-					}else if(current == current->parent->nodeChildren[1]){
-						if(current->isAboveLeaf == true){
-
-							current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
-
-							current->parent->nodeChildren[2] = new treeNode();
-							current->parent->nodeChildren[2]->parent = current->parent;
-							current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
-							current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
-							current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
-							current->parent->nodeChildren[2]->indexUsed++;
-
-							current->leafChildren[2] = NULL;
-							current->leafChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-						}else{
-
-							current->parent->nodeChildren[3] = current->parent->nodeChildren[2];
-
-							current->parent->nodeChildren[2] = new treeNode();
-							current->parent->nodeChildren[2]->parent = current->parent;
-							current->parent->nodeChildren[2]->nodeChildren[0] = current->nodeChildren[2];
-							current->parent->nodeChildren[2]->nodeChildren[1] = current->nodeChildren[3];
-							current->parent->nodeChildren[2]->perms[0] = get_node_index(current->parent->nodeChildren[2]->nodeChildren[1]);
-							current->parent->nodeChildren[2]->indexUsed++;
-
-							current->nodeChildren[2] = NULL;
-							current->nodeChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-						}
-
-					}else if(current == current->parent->nodeChildren[2]){
-						if(current->isAboveLeaf == true){
-
-							current->parent->nodeChildren[3] = new treeNode();
-							current->parent->nodeChildren[3]->parent = current->parent;
-							current->parent->nodeChildren[3]->leafChildren[0] = current->leafChildren[2];
-							current->parent->nodeChildren[3]->leafChildren[1] = current->leafChildren[3];
-							current->parent->nodeChildren[3]->perms[0] = current->parent->nodeChildren[3]->leafChildren[1].getSmallerPerm();
-							current->parent->nodeChildren[3]->indexUsed++;
-
-							current->leafChildren[2] = NULL;
-							current->leafChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-						}else{
-
-							current->parent->nodeChildren[3] = new treeNode();
-							current->parent->nodeChildren[3]->parent = current->parent;
-							current->parent->nodeChildren[3]->nodeChildren[0] = current->nodeChildren[2];
-							current->parent->nodeChildren[3]->nodeChildren[1] = current->nodeChildren[3];
-							current->parent->nodeChildren[3]->perms[0] = get_node_index(current->parent->nodeChildren[3]->nodeChildren[1]);
-							current->parent->nodeChildren[3]->indexUsed++;
-
-							current->nodeChildren[2] = NULL;
-							current->nodeChildren[3] = NULL;
-							current->perm[1] = 0;
-							current->perm[2] = 0;
-							current->indexUsed = 1;
-							current->isNodefull = false;
-
-							current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
-							current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
-							current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
-							current->parent->indexUsed++;
-							current->parent->isNodefull = true;
-
-						}
-
-					}
-
-				}
-
+				break_when_parent_not_full(current);
+		
 			}else{
+
 				break_up(current->parent);
+				break_when_parent_not_full(current);
 
 			}
 		}
@@ -690,10 +688,6 @@ using namespace std;
 				}
 			}
 		}
-	}
-
-	int B_Tree:: get_graph_index(int perm) {
-		return -1;  //stub
 	}
 
 	userInfo B_Tree:: get_userInfo(int perm) {

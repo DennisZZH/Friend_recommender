@@ -21,15 +21,12 @@ struct treeNode{
 
 	treeNode();
 
-	treeNode(const treeNode& copy);
-
 	int perms[];
 	treeNode* nodeChildren[];
 	treeLeaf* leafChildren[];
 	bool isAboveLeaf = true;
 	bool isNodeFull = false;
 	int indexUsed = 0;
-	int GraphIndex = 0; //index of the node userInfo object in the relation graph adjacency list
 
 	treeNode* parent = NULL;
 };
@@ -39,8 +36,6 @@ struct treeLeaf{
 	treeLeaf();
 
 	treeLeaf(userInfo user);			// invariant: userone must always be smaller than usertwo
-
-	treeLeaf(const treeLeaf& copy);
 
 	void insert(userInfo user);
 
@@ -58,17 +53,17 @@ public:
 
 	B_Tree();		// constructor
 
-	void add_user(userInfo user, int index);    //The index of the node userInfo object in the relation graph adjacency list
+	void add_user(userInfo user);   // general add function
 
 	bool find_user(int perm);
 
-	void find_and_insert(int perm, treeNode* root);
+	void find_and_insert(userInfo user, treeNode* root);  // add function, under the condition that isOnlyLeaf is false ( after third insertion)
 
-	void break_up(treeNode* current);
+	void break_up(treeNode* current);				// general break up funtion, used when a node of a leaf is full and need to be broken down
 
-	int get_node_index(treeNode* current);
+	void break_when_parent_not_full(treeNode* current)	// break function, under the condition that the current node's parent is not full, thus just break the current node, and reallocate its siblings
 
-	int get_graph_index(int perm);
+	int get_node_index(treeNode* current);			// given a treeNode pointer, find the smaller perm of left most leaf under that treeNode.(find the smallest perm under that node) 
 
 	userInfo get_userInfo(int perm);
 
