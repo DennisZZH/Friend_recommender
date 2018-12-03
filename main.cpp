@@ -7,6 +7,8 @@
 using namespace std;
 
 int main() {
-
+	string WelcomeMessage;
+	WelcomeMessage += "Hello, welcome to the Friend Recommender System.\n";
+	WelcomeMessage += "Please make the one of the following choices.\n";
 	return 0;
 }

@@ -29,6 +29,7 @@ struct treeNode{
 	bool isAboveLeaf = true;
 	bool isNodeFull = false;
 	int indexUsed = 0;
+	int GraphIndex = 0; //index of the node userInfo object in the relation graph adjacency list
 
 	treeNode* parent = NULL;
 };
@@ -57,7 +58,7 @@ public:
 
 	B_Tree();		// constructor
 
-	void add_user(userInfo user);
+	void add_user(userInfo user, int index);    //The index of the node userInfo object in the relation graph adjacency list
 
 	bool find_user(int perm);
 
@@ -66,6 +67,10 @@ public:
 	void break_up(treeNode* current);
 
 	int get_node_index(treeNode* current);
+
+	int get_graph_index(int perm);
+
+	userInfo get_userInfo(int perm);
 
 private:
 	

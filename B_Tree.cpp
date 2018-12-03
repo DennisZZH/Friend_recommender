@@ -21,7 +21,7 @@ using namespace std;
 		this->isOnlyLeaf = true;
 	}
 
-	void B_Tree::add_user(userInfo user){
+	void B_Tree:: add_user(userInfo user, int index) {
 		if(isOnlyLeaf == true){							// in the case that there are only leaves.
 			if(rootLeaf == NULL){							// 1st insertion, root points to a leaf
 				rootLeaf = new treeLeaf(user);
@@ -58,7 +58,7 @@ using namespace std;
 
 
 
-	void break_up(treeNode* current){
+	void B_Tree:: break_up(treeNode* current){
 
 		if(current->parent == NULL){
 			if(current->isAboveLeaf == true){
@@ -377,43 +377,48 @@ using namespace std;
 
 			}
 		}
-
 	}
 
 
 
-	void B_Tree::find_and_insert(userInfo user, treeNode* root){				
+	void B_Tree:: find_and_insert(userInfo user, treeNode* root) {
 
 		int perm = user.get_perm();
 
-		if(root->isAboveLeaf == true){					// at the level of node that above leaves; base case
+		if (root->isAboveLeaf == true) {                    // at the level of node that above leaves; base case
 
-			if(root->indexUsed == 1){						// if there is only one index available, which means this node has 2 children leaves
+			if (root->indexUsed ==
+			    1) {                        // if there is only one index available, which means this node has 2 children leaves
 
-				if( perm < root->perms[0]){						// if perm we want to insert is smaller than this index, we go to the right pointer (smaller side)
+				if (perm <
+				    root->perms[0]) {                        // if perm we want to insert is smaller than this index, we go to the right pointer (smaller side)
 
-					if(root->leafChildren[0]->isLeafFull == false){			// go to the correct leaf, if it is not full, just insert
+					if (root->leafChildren[0]->isLeafFull ==
+					    false) {            // go to the correct leaf, if it is not full, just insert
 
 						root->leafChildren[0]->insert(user);
 
-					}else{													// if the correct leaf is full
-						if(perm > root->leafChildren[0]->getLargerPerm()){				// the case that perm we want to insert is greater than the larger perm of the leaf
+					} else {                                                    // if the correct leaf is full
+						if (perm >
+						    root->leafChildren[0]->getLargerPerm()) {                // the case that perm we want to insert is greater than the larger perm of the leaf
 
-							root->leafChildren[2] = root->leafChildren[1];				// allocate a new leaf for the perm
+							root->leafChildren[2] = root->leafChildren[1];                // allocate a new leaf for the perm
 
 							root->leafChildren[1] = new treeLeaf(user);
 
-						}else if(perm < root->leafChildren[0]->getLargerPerm() && perm > root->leafChildren[0]->getSmallerPerm()){				// the case that perm is in between of the largerer and smaller user perms
+						} else if (perm < root->leafChildren[0]->getLargerPerm() && perm >
+						                                                            root->leafChildren[0]->getSmallerPerm()) {                // the case that perm is in between of the largerer and smaller user perms
 
-							root->leafChildren[2] = root->leafChildren[1];																		// push the exsiting larger user to a new leaf
+							root->leafChildren[2] = root->leafChildren[1];                                                                        // push the exsiting larger user to a new leaf
 
 							root->leafChildren[1] = new treeLeaf(*(root->leafChildren[0]->userTwo));
 
 							root->leafChildren[0]->userTwo = new userInfo(user);
 
-						}else if(perm < root->leafChildren[0]->getSmallerPerm()){																// the case that perm is smaller than the smaller user perm
+						} else if (perm <
+						           root->leafChildren[0]->getSmallerPerm()) {                                                                // the case that perm is smaller than the smaller user perm
 
-							root->leafChildren[2] = root->leafChildren[1];																		// allocate a new leaf on the left for the perm
+							root->leafChildren[2] = root->leafChildren[1];                                                                        // allocate a new leaf on the left for the perm
 
 							root->leafChildren[1] = root->leafChildren[0];
 
@@ -421,7 +426,7 @@ using namespace std;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
 						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
 
@@ -429,27 +434,32 @@ using namespace std;
 
 					}
 
-				}else if( perm > root->perms[0]){
+				} else if (perm > root->perms[0]) {
 
-					if(root->leafChildren[1]->isLeafFull == false){				// go to the correct leaf, if it is not full, just insert
+					if (root->leafChildren[1]->isLeafFull ==
+					    false) {                // go to the correct leaf, if it is not full, just insert
 
 						root->leafChildren[1]->insert(user);
 
-					}else{														//if the correct leaf is full
-						
-						if(perm < root->leafChildren[1]->getLargerPerm()){					// the case that the perm we want to insert is in between of the larger and smaller user
+					} else {                                                        //if the correct leaf is full
 
-							root->leafChildren[2] = new treeLeaf(*(root->leafChildren[1]->userTwo));			// push the existing larger user to new leaf
+						if (perm <
+						    root->leafChildren[1]->getLargerPerm()) {                    // the case that the perm we want to insert is in between of the larger and smaller user
 
-							root->leafChildren[1]-userTwo = new userInfo(user);
+							root->leafChildren[2] = new treeLeaf(
+									*(root->leafChildren[1]->userTwo));            // push the existing larger user to new leaf
 
-						}else if(perm > root->leafChildren[1]->getLargerPerm()){			// the case that the perm is greater than the larger user
+							root->leafChildren[1] - userTwo = new userInfo(user);
 
-							root->leafChildren[2] = new treeLeaf(user);									// allocate a new leaf for the new perm on the right(largest)
+						} else if (perm >
+						           root->leafChildren[1]->getLargerPerm()) {            // the case that the perm is greater than the larger user
+
+							root->leafChildren[2] = new treeLeaf(
+									user);                                    // allocate a new leaf for the new perm on the right(largest)
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
 						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
 
@@ -458,18 +468,19 @@ using namespace std;
 					}
 
 				}
-				
-			}else if(root->indexUsed == 2){					// if there are two indexs available
 
-				if(perm < root->perms[0]){								// goes to the first leaf(left most)
+			} else if (root->indexUsed == 2) {                    // if there are two indexs available
 
-					if(root->leafChildren[0]->isLeafFull == false){					// if it is not full, just insert
+				if (perm < root->perms[0]) {                                // goes to the first leaf(left most)
+
+					if (root->leafChildren[0]->isLeafFull ==
+					    false) {                    // if it is not full, just insert
 
 						root->leafChildren[0]->insert(user);
 
-					}else{															// if it is full
+					} else {                                                            // if it is full
 
-						if(perm > root->leafChildren[0]->getLargerPerm()){
+						if (perm > root->leafChildren[0]->getLargerPerm()) {
 
 							root->leafChildren[3] = root->leafChildren[2];
 
@@ -477,7 +488,8 @@ using namespace std;
 
 							root->leafChildren[1] = new treeLeaf(user);
 
-						}else if(perm < root->leafChildren[0]->getLargerPerm() && perm > root->leafChildren[0]->getSmallerPerm()){
+						} else if (perm < root->leafChildren[0]->getLargerPerm() &&
+						           perm > root->leafChildren[0]->getSmallerPerm()) {
 
 							root->leafChildren[3] = root->leafChildren[2];
 
@@ -487,7 +499,7 @@ using namespace std;
 
 							root->leafChildren[0]->userTwo = new userInfo(user);
 
-						}else{
+						} else {
 
 							root->leafChildren[3] = root->leafChildren[2];
 
@@ -499,7 +511,7 @@ using namespace std;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
 						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
 
@@ -509,172 +521,184 @@ using namespace std;
 
 						isNodeFull = true;
 					}
-					
-				else if(perm > perms[0] && perm < perms[1]){			// goes to the second leaf(in between)
 
-					if(root->leafChildren[1]->isLeafFull == false){					// if it is not full, just insert
+					else if (perm > perms[0] && perm < perms[1]) {            // goes to the second leaf(in between)
 
-						root->leafChildren[1]->insert(user);
+						if (root->leafChildren[1]->isLeafFull ==
+						    false) {                    // if it is not full, just insert
 
-					}else{															// if it is full
+							root->leafChildren[1]->insert(user);
 
-						if(perm < root->leafChildren[1]->getLargerPerm()){
+						} else {                                                            // if it is full
 
-							root->leafChildren[3] = root->leafChildren[2];
+							if (perm < root->leafChildren[1]->getLargerPerm()) {
 
-							root->leafChildren[2] = new treeLeaf(*(root->leafChildren[1]->userTwo));
+								root->leafChildren[3] = root->leafChildren[2];
 
-							root->leafChildren[1]->userTwo = new userInfo(user);
+								root->leafChildren[2] = new treeLeaf(*(root->leafChildren[1]->userTwo));
 
-						}else if(perm > root->leafChildren[1]->getLargerPerm()){
+								root->leafChildren[1]->userTwo = new userInfo(user);
 
-							root->leafChildren[3] = root->leafChildren[2];
+							} else if (perm > root->leafChildren[1]->getLargerPerm()) {
 
-							root->leafChildren[2] = new treeLeaf(user);
+								root->leafChildren[3] = root->leafChildren[2];
+
+								root->leafChildren[2] = new treeLeaf(user);
+
+							}
+
+							root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+
+							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+
+							root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+
+							indexUsed++;
+
+							isNodeFull = true;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+					} else {                                                    // goes to the third leaf(right most)
 
-						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+						if (root->leafChildren[2]->isLeafFull ==
+						    false) {                // go to the correct leaf, if it is not full, just insert
 
-						root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+							root->leafChildren[2]->insert(user);
 
-						indexUsed++;
+						} else {
 
-						isNodeFull = true;
+							if (perm < root->leafChildren[2]->getLargerPerm()) {
 
-					}
+								root->leafChildren[3] = new treeLeaf(*(root->leafChildren[2]->userTwo));
 
-				}else{													// goes to the third leaf(right most)
+								root->leafChildren[2]->userTwo = new userInfo(user);
 
-					if(root->leafChildren[2]->isLeafFull == false){				// go to the correct leaf, if it is not full, just insert
+							} else if (perm > root->leafChildren[2]->getLargerPerm()) {
 
-						root->leafChildren[2]->insert(user);
+								root->leafChildren[3] = new treeLeaf(user);
 
-					}else{
+							}
 
-						if(perm < root->leafChildren[2]->getLargerPerm()){
+							root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-							root->leafChildren[3] = new treeLeaf(*(root->leafChildren[2]->userTwo));
+							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
 
-							root->leafChildren[2]->userTwo = new userInfo(user);
+							root->perm[2] = root->leafChildren[3]->getSmallerPerm();
 
-						}else if(perm > root->leafChildren[2]->getLargerPerm()){
+							indexUsed++;
 
-							root->leafChildren[3] = new treeLeaf(user);
+							isNodeFull = true;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();															// adjust index
+					}else if (root->indexUsed == 3) {
 
-						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+						if (perm < root->perms[0]) {
 
-						root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+							if (root->leafChildren[0]->isLeafFull ==
+							    false) {                    // if it is not full, just insert
 
-						indexUsed++;
+								root->leafChildren[0]->insert(user);
 
-						isNodeFull = true;
+							} else {
 
-					}
+								break_up(root);
 
-			}else if(root->indexUsed == 3){
+								find_and_insert(user, root);
 
-				if(perm < root->perms[0]){
+							}
 
-					if(root->leafChildren[0]->isLeafFull == false){					// if it is not full, just insert
+						} else if (perm >= perms[0] && perm < perms[1]) {
 
-						root->leafChildren[0]->insert(user);
+							if (root->leafChildren[1]->isLeafFull ==
+							    false) {                    // if it is not full, just insert
 
-					}else{
+								root->leafChildren[1]->insert(user);
 
-						break_up(root);
+							} else {
 
-						find_and_insert(user, root);
+								break_up(root);
 
-					}
-					
-				}else if(perm >= perms[0] && perm < perms[1]){
+								find_and_insert(user, root);
 
-					if(root->leafChildren[1]->isLeafFull == false){					// if it is not full, just insert
+							}
 
-						root->leafChildren[1]->insert(user);
+						} else if (perm >= perms[1] && perm < perms[2]) {
 
-					}else{
+							if (root->leafChildren[2]->isLeafFull ==
+							    false) {                    // if it is not full, just insert
 
-						break_up(root);
+								root->leafChildren[2]->insert(user);
 
-						find_and_insert(user, root);
+							} else {
 
-					}
-					
-				}else if(perm >= perms[1] && perm < perms[2]){
+								break_up(root);
 
-					if(root->leafChildren[2]->isLeafFull == false){					// if it is not full, just insert
+								find_and_insert(user, root);
 
-						root->leafChildren[2]->insert(user);
+							}
 
-					}else{
+						} else {
 
-						break_up(root);
+							if (root->leafChildren[3]->isLeafFull ==
+							    false) {                    // if it is not full, just insert
 
-						find_and_insert(user, root);
+								root->leafChildren[3]->insert(user);
 
-					}
-					
-				}else{
+							} else {
 
-					if(root->leafChildren[3]->isLeafFull == false){					// if it is not full, just insert
+								break_up(root);
 
-						root->leafChildren[3]->insert(user);
+								find_and_insert(user, root);
 
-					}else{
+							}
 
-						break_up(root);
-
-						find_and_insert(user, root);
+						}
 
 					}
 
+				} else {
+
+					if (perm < root->perms[0]) {
+
+						find_and_insert(user, root->nodeChildren[0]);
+
+					} else if (perm > root->perms[indexUsed - 1]) {
+
+						find_and_insert(user, root->nodeChildren[indexUsed]);
+
+					} else if (indexUsed == 2) {
+
+						if (perm >= root->perms[0] && perm < root->perms[1]) {
+
+							find_and_insert(user, root->nodeChildren[1]);
+						}
+
+					} else if (indexUsed == 3) {
+
+						if (perm >= root->perms[0] && perm < root->perms[1]) {
+
+							find_and_insert(user, root->nodeChildren[1]);
+
+						} else if (perm >= perms[1] && perm < perms[2]) {
+
+							find_and_insert(user, root->nodeChildren[2]);
+
+						}
+					}
 				}
 
 			}
-
-		}else{
-
-			if(perm < root->perms[0]){
-
-				find_and_insert(user, root->nodeChildren[0]);
-
-			}else if(perm > root->perms[indexUsed - 1]){
-
-				find_and_insert(user, root->nodeChildren[indexUsed]);
-
-			}else if(indexUsed == 2){
-
-				if(perm >= root->perms[0] && perm < root->perms[1]){
-
-					find_and_insert(user, root->nodeChildren[1]);
-				}
-
-			}else if(indexUsed == 3){
-
-				if(perm >= root->perms[0] && perm < root->perms[1]){
-
-					find_and_insert(user, root->nodeChildren[1]);
-
-				}else if(perm >= perms[1] && perm < perms[2]){
-
-					find_and_insert(user, root->nodeChildren[2]);
-
-				}
-			}															
 		}
-																				
 	}
 
+	int B_Tree:: get_graph_index(int perm) {
+		return -1;  //stub
+	}
 
-
-
-
+	userInfo B_Tree:: get_userInfo(int perm) {
+		userInfo user;
+		return user;    //stub
+	}
 

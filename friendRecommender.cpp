@@ -11,7 +11,7 @@ void friendRecommender:: add_a_user(int perm, string name, string genre1, string
     graph->insert_relation(perm, friends);
     int index = graph->get_index(perm);
     userInfo user(perm, name, genre1, genre2);
-    tree->add_user(user);   //tree insertion needs the index; get add a new index parameter
+    tree->add_user(user, index);
 }
 
 bool friendRecommender:: find_a_user(int perm) {
@@ -23,7 +23,7 @@ void friendRecommender:: find_a_user_details(int perm) {
 }
 
 void friendRecommender:: recommend_friends(int perm) {
-    int index = 0; //assign index = B_Tree.find_user_details.get_perm()
+    int index = tree->get_graph_index(perm);
 
     vector<int> CurrentFriends (graph->friendship_graph[index].begin(), graph->friendship_graph[index].end());
 
@@ -44,14 +44,28 @@ void friendRecommender:: recommend_friends(int perm) {
             }
         }
 
-        if (!isCurrentFriend) { //&& the genre is the same
-            //clearly print the < perm number, name, 2 genres >
+        if (!isCurrentFriend) {
+            userInfo PermUser = tree->get_userInfo(perm);
+            userInfo FrontUser = tree->get_userInfo(front);
+            string PermUserGenre1 = PermUser.get_genre1();
+            string PermUserGenre2 = PermUser.get_genre2();
+            string FrontUserGenre1 = FrontUser.get_genre1();
+            string FrontUserGenre2 = FrontUser.get_genre2();
+
+            if (PermUserGenre1 == FrontUserGenre1 or    //compare the genres of the two users
+                PermUserGenre1 == FrontUserGenre2 or
+                PermUserGenre2 == FrontUserGenre1 or
+                PermUserGenre2 == FrontUserGenre2) {
+                cout << "< " << FrontUser.get_perm() << ", "    //print the friend that matches
+                    << FrontUser.get_name() << ", "
+                    << FrontUserGenre1 << ", "
+                    << FrontUserGenre2 << " >\n";
+            }
         }
 
-        cout << front << " ";
-        int FrontIndex = 0; //index = B_Tree.find_user_details.get_perm()
+        int FrontIndex = tree->get_graph_index(front);
 
-        // Enqueue all adjacent of front and mark them visited
+        //enqueue all adjacent nodes of front and mark them visited
         for (int &i : graph->friendship_graph[FrontIndex]) {
             if (!visited[i]) {
                 queue.push(i);
