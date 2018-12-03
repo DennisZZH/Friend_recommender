@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <utility>
+#include <queue>
 
 #include "B_Tree.h"
 #include "Relation_Graph.h"
@@ -25,7 +27,7 @@ public:
 
 	friendRecommender();		// constructor
 
-	void add_a_user(userInfo user, vector<int> friends);
+	void add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends);
 
 	bool find_a_user(int perm);
 
