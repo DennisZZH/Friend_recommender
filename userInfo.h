@@ -13,7 +13,7 @@ class userInfo{
 
 public:
 
-	userInfo();		// default constructor
+	userInfo();   // default constructor
 
 	userInfo(int perm, string name, string genre1, string genre2);	// constructor
 
@@ -23,7 +23,8 @@ public:
 	string get_genre2(){ return genre2;};
 
 private:
-	int perm ; // unique id
+
+	int perm; // unique id
 	string name ; // name of the person
 	string genre1 ; // first favorite movie genre
 	string genre2 ; // second favorite movie genre

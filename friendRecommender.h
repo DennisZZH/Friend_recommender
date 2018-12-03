@@ -8,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <queue>
+#include <fstream>
 
 #include "B_Tree.h"
 #include "Relation_Graph.h"
@@ -26,6 +27,8 @@ class friendRecommender{
 public:
 
 	friendRecommender();		// constructor
+
+	void InputFile(const string &reference);
 
 	void add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends);
 

@@ -7,6 +7,50 @@ friendRecommender:: friendRecommender() {
     graph = new Relation_Graph();
 }
 
+void friendRecommender:: InputFile(const string &reference) {
+	int perm;
+	unsigned long NextSemicolonIndex;
+	string name;
+	string genre1;
+	string genre2;
+	string ParseNext;
+	vector<int> ParsedFriends;
+	ifstream file;
+	file.open(reference);
+	if (!file.is_open()) {
+		cerr << "Failed to open the file.\n";
+		exit(0);
+	}
+	string Word;
+	while (file >> Word) {
+		ParseNext = Word;
+		perm = stoi(ParseNext.substr(0, 1));
+
+		ParseNext = string(ParseNext.begin() + 2, ParseNext.end());
+		NextSemicolonIndex = ParseNext.find(';');
+		name = ParseNext.substr(0, NextSemicolonIndex);
+
+		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+		NextSemicolonIndex = ParseNext.find(';');
+		genre1 = ParseNext.substr(0, NextSemicolonIndex);
+
+		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+		NextSemicolonIndex = ParseNext.find(';');
+		genre2 = ParseNext.substr(0, NextSemicolonIndex);
+
+		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+		NextSemicolonIndex = ParseNext.find(';');
+		while (NextSemicolonIndex != -1) {
+			ParsedFriends.push_back(stoi(ParseNext.substr(0, NextSemicolonIndex)));
+			ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+			NextSemicolonIndex = ParseNext.find(';');
+		}
+		ParsedFriends.push_back(stoi(ParseNext.substr(0, NextSemicolonIndex)));
+
+		add_a_user(perm, name, genre1, genre2, ParsedFriends);
+	}
+}
+
 void friendRecommender:: add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends) {
     graph->insert_relation(perm, friends);
     int index = graph->get_index(perm);
