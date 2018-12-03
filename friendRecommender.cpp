@@ -55,8 +55,8 @@ void friendRecommender:: InputFile(const string &reference) {
 void friendRecommender:: add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends) {
     graph->insert_relation(perm, friends);
     int index = graph->get_index(perm);
-    userInfo user(perm, name, genre1, genre2);
-    tree->add_user(user, index);
+    userInfo user(perm, name, genre1, genre2, index);
+    tree->add_user(user);
 }
 
 bool friendRecommender:: find_a_user(int perm) {
@@ -68,7 +68,7 @@ void friendRecommender:: find_a_user_details(int perm) {
 }
 
 void friendRecommender:: recommend_friends(int perm) {
-    int index = tree->get_graph_index(perm);
+    int index = tree->get_userInfo(perm).get_graph_index();
 
     vector<int> CurrentFriends (graph->friendship_graph[index].begin(), graph->friendship_graph[index].end());
 
@@ -90,25 +90,23 @@ void friendRecommender:: recommend_friends(int perm) {
         }
 
         if (!isCurrentFriend) {
-            userInfo PermUser = tree->get_userInfo(perm);
-            userInfo FrontUser = tree->get_userInfo(front);
-            string PermUserGenre1 = PermUser.get_genre1();
-            string PermUserGenre2 = PermUser.get_genre2();
-            string FrontUserGenre1 = FrontUser.get_genre1();
-            string FrontUserGenre2 = FrontUser.get_genre2();
+            string PermUserGenre1 = tree->get_userInfo(perm).get_genre1();
+            string PermUserGenre2 = tree->get_userInfo(perm).get_genre2();
+            string FrontUserGenre1 = tree->get_userInfo(front).get_genre1();
+            string FrontUserGenre2 = tree->get_userInfo(front).get_genre2();
 
             if (PermUserGenre1 == FrontUserGenre1 or    //compare the genres of the two users
                 PermUserGenre1 == FrontUserGenre2 or
                 PermUserGenre2 == FrontUserGenre1 or
                 PermUserGenre2 == FrontUserGenre2) {
-                cout << "< " << FrontUser.get_perm() << ", "    //print the friend that matches
-                    << FrontUser.get_name() << ", "
+                cout << "< " << tree->get_userInfo(front).get_perm() << ", "    //print the friend that matches
+                    << tree->get_userInfo(front).get_name() << ", "
                     << FrontUserGenre1 << ", "
                     << FrontUserGenre2 << " >\n";
             }
         }
 
-        int FrontIndex = tree->get_graph_index(front);
+        int FrontIndex = tree->get_userInfo(front).get_graph_index();
 
         //enqueue all adjacent nodes of front and mark them visited
         for (int &i : graph->friendship_graph[FrontIndex]) {
