@@ -13,7 +13,7 @@ void friendRecommender:: InputFile(const string &reference) {
 	string name;
 	string genre1;
 	string genre2;
-	string ParseNext;
+	string ParseNext;   //substring after the next semicolon of the input word line
 	vector<int> ParsedFriends;
 	ifstream file;
 	file.open(reference);
@@ -24,9 +24,10 @@ void friendRecommender:: InputFile(const string &reference) {
 	string Word;
 	while (file >> Word) {
 		ParseNext = Word;
-		perm = stoi(ParseNext.substr(0, 1));
+		NextSemicolonIndex = ParseNext.find(';');
+		perm = stoi(ParseNext.substr(0, NextSemicolonIndex));
 
-		ParseNext = string(ParseNext.begin() + 2, ParseNext.end());
+		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
 		NextSemicolonIndex = ParseNext.find(';');
 		name = ParseNext.substr(0, NextSemicolonIndex);
 
