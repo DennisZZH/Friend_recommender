@@ -14,7 +14,6 @@ void friendRecommender:: InputFile(const string &reference) {
 	string genre1;
 	string genre2;
 	string ParseNext;   //substring after the next semicolon of the input word line
-	vector<int> ParsedFriends;
 	ifstream file;
 	file.open(reference);
 	if (!file.is_open()) {
@@ -23,11 +22,18 @@ void friendRecommender:: InputFile(const string &reference) {
 	}
 	string Word;
 	while (file >> Word) {
+		vector<int> ParsedFriends;
 		ParseNext = Word;
+		cout << ParseNext << "... \n";
 		NextSemicolonIndex = ParseNext.find(';');
 		perm = stoi(ParseNext.substr(0, NextSemicolonIndex));
 
-		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+		if (ParseNext.find_last_of(';') == NextSemicolonIndex) {
+			file >> ParseNext;
+		}
+		else {
+			ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+		}
 		NextSemicolonIndex = ParseNext.find(';');
 		name = ParseNext.substr(0, NextSemicolonIndex);
 
@@ -60,14 +66,17 @@ void friendRecommender:: add_a_user(int perm, string name, string genre1, string
 }
 
 bool friendRecommender:: find_a_user(int perm) {
-
+	graph->print_graph_test();
 }
 
 void friendRecommender:: find_a_user_details(int perm) {
-
+	cout << graph->get_index(perm);
+	for (auto i = graph->friendship_graph[perm].begin(); i !=graph->friendship_graph[perm].end(); i++) {
+		cout << *i << ", ";
+	}
 }
 
-void friendRecommender:: recommend_friends(int perm) {
+ void friendRecommender:: recommend_friends(int perm) {
     int index = tree->get_userInfo(perm).get_graph_index();
 
     vector<int> CurrentFriends (graph->friendship_graph[index].begin(), graph->friendship_graph[index].end());
