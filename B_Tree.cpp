@@ -5,40 +5,8 @@
 #include <string>
 
 #include "B_Tree.h"
-#include "userInfo.h"
 
 using namespace std;
-
-	treeNode::treeNode(){
-		perms = new int[3];
-		for(int i = 0; i < 3; i ++){
-			perm[i] = 0;
-		}
-		nodeChildren = new nodeChildren[4];
-		leafChildren = new leafChildren[4];
-	}
-
-	treeLeaf::treeLeaf(userInfo user){
-		userOne = new userInfo(user);
-	}
-
-	void treeLeaf::insert(userInfo user){
-		perm = user.get_perm();
-		if(perm > userOne->get_perm()){
-			userTwo = new userInfo(user);
-		}else{
-			userTwo = userOne;
-			userOne = new userInfo(user);
-		}
-	}
-
-	int treeLeaf::getSmallerPerm(){
-		return userOne->get_perm();
-	}
-
-	int treeLeaf::getLargerPerm(){
-		return userTwo->get_perm();
-	}
 
 	B_Tree::B_Tree(){
 		this->rootNode = NULL;
@@ -46,30 +14,30 @@ using namespace std;
 		this->isOnlyLeaf = true;
 	}
 
-	void B_Tree:: add_user(userInfo user, int index) {
+	void B_Tree::add_user(userInfo user) {
 		if(isOnlyLeaf == true){							// in the case that there are only leaves.
 			if(rootLeaf == NULL){							// 1st insertion, root points to a leaf
 				rootLeaf = new treeLeaf(user);
-			}else if(rootLeaf != NULL && rootLeaf->isFull == false){						// second insertion, leaf full
+			}else if(rootLeaf != NULL && rootLeaf->isLeafFull == false){						// second insertion, leaf full
 				rootLeaf->insert(user);
 				rootLeaf->isLeafFull = true;
-			}else if(rootLeaf != NULL && rootLeaf->isFull == true){			// third insertion, object number exceed leaf size by 1, need to use treeNode now
+			}else if(rootLeaf != NULL && rootLeaf->isLeafFull == true){			// third insertion, object number exceed leaf size by 1, need to use treeNode now
 				rootNode = new treeNode();
 				if(user.get_perm() < rootLeaf->getSmallerPerm()){		// third user's perm is the smallest
 					rootNode->leafChildren[0] = new treeLeaf(user);
 					rootNode->leafChildren[1] = rootLeaf;
-					rootNode->perms[0] = leafChildren[1]->getSmallerPerm();
+					rootNode->perms[0] = rootNode->leafChildren[1]->getSmallerPerm();
 					rootNode->indexUsed++;
 				}else if(user.get_perm() > rootLeaf->getLargerPerm()){				// third user's perm is the greatest
 					rootNode->leafChildren[1] = new treeLeaf(user);
 					rootNode->leafChildren[0] = rootLeaf;
-					rootNode->perms[0] = leafChildren[1]->getSmallerPerm();
+					rootNode->perms[0] = rootNode->leafChildren[1]->getSmallerPerm();
 					rootNode->indexUsed++;												// third user's perm is in between of the first and second
 				}else{
 					rootNode->leafChildren[0] = rootLeaf;
 					rootNode->leafChildren[1] = new treeLeaf(*(rootNode->leafChildren[0]->userTwo));	// rearrange, place the smaller two user on the first leaf, largest one user on the second leaf
 					rootNode->leafChildren[0]->userTwo = new userInfo(user);
-					rootNode->perms[0] = leafChildren[1]->getSmallerPerm();	
+					rootNode->perms[0] = rootNode->leafChildren[1]->getSmallerPerm();	
 					rootNode->indexUsed++;
 				}
 				isOnlyLeaf = false;
@@ -88,19 +56,19 @@ using namespace std;
 
 				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
 
-				current->parengt->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1] = new treeNode();
 				current->parent->nodeChildren[1]->parent = current->parent;
 				current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
 				current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
-				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1]->getSmallerPerm();
 				current->parent->nodeChildren[1]->indexUsed++;
 
 				current->leafChildren[2] = NULL;
 				current->leafChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
@@ -110,7 +78,7 @@ using namespace std;
 
 				current->parent->nodeChildren[2] = current->parent->nodeChildren[1];
 
-				current->parengt->nodeChildren[1] = new treeNode();
+				current->parent->nodeChildren[1] = new treeNode();
 				current->parent->nodeChildren[1]->parent = current->parent;
 				current->parent->nodeChildren[1]->isAboveLeaf = false;
 				current->parent->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
@@ -120,10 +88,10 @@ using namespace std;
 
 				current->nodeChildren[2] = NULL;
 				current->nodeChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
@@ -134,19 +102,19 @@ using namespace std;
 		}else if(current == current->parent->nodeChildren[1]){
 			if(current->isAboveLeaf == true){
 
-				current->parengt->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2] = new treeNode();
 				current->parent->nodeChildren[2]->parent = current->parent;
 				current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
 				current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
-				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1]->getSmallerPerm();
 				current->parent->nodeChildren[2]->indexUsed++;
 
 				current->leafChildren[2] = NULL;
 				current->leafChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
@@ -154,7 +122,7 @@ using namespace std;
 
 			}else{
 
-				current->parengt->nodeChildren[2] = new treeNode();
+				current->parent->nodeChildren[2] = new treeNode();
 				current->parent->nodeChildren[2]->parent = current->parent;
 				current->parent->nodeChildren[2]->isAboveLeaf = false;
 				current->parent->nodeChildren[2]->nodeChildren[0] = current->nodeChildren[2];
@@ -164,10 +132,10 @@ using namespace std;
 
 				current->nodeChildren[2] = NULL;
 				current->nodeChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
@@ -187,21 +155,21 @@ using namespace std;
 				current->parent->nodeChildren[1]->parent = current->parent;
 				current->parent->nodeChildren[1]->leafChildren[0] = current->leafChildren[2];
 				current->parent->nodeChildren[1]->leafChildren[1] = current->leafChildren[3];
-				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[1]->perms[0] = current->parent->nodeChildren[1]->leafChildren[1]->getSmallerPerm();
 				current->parent->nodeChildren[1]->indexUsed++;
 
 				current->leafChildren[2] = NULL;
 				current->leafChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 
 			}else{
@@ -218,16 +186,16 @@ using namespace std;
 
 				current->nodeChildren[2] = NULL;
 				current->nodeChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 			}
 
@@ -240,21 +208,21 @@ using namespace std;
 				current->parent->nodeChildren[2]->parent = current->parent;
 				current->parent->nodeChildren[2]->leafChildren[0] = current->leafChildren[2];
 				current->parent->nodeChildren[2]->leafChildren[1] = current->leafChildren[3];
-				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[2]->perms[0] = current->parent->nodeChildren[2]->leafChildren[1]->getSmallerPerm();
 				current->parent->nodeChildren[2]->indexUsed++;
 
 				current->leafChildren[2] = NULL;
 				current->leafChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 			}else{
 
@@ -269,16 +237,16 @@ using namespace std;
 
 				current->nodeChildren[2] = NULL;
 				current->nodeChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 			}
 
@@ -289,21 +257,21 @@ using namespace std;
 				current->parent->nodeChildren[3]->parent = current->parent;
 				current->parent->nodeChildren[3]->leafChildren[0] = current->leafChildren[2];
 				current->parent->nodeChildren[3]->leafChildren[1] = current->leafChildren[3];
-				current->parent->nodeChildren[3]->perms[0] = current->parent->nodeChildren[3]->leafChildren[1].getSmallerPerm();
+				current->parent->nodeChildren[3]->perms[0] = current->parent->nodeChildren[3]->leafChildren[1]->getSmallerPerm();
 				current->parent->nodeChildren[3]->indexUsed++;
 
 				current->leafChildren[2] = NULL;
 				current->leafChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 			}else{
 
@@ -316,16 +284,16 @@ using namespace std;
 
 				current->nodeChildren[2] = NULL;
 				current->nodeChildren[3] = NULL;
-				current->perm[1] = 0;
-				current->perm[2] = 0;
+				current->perms[1] = 0;
+				current->perms[2] = 0;
 				current->indexUsed = 1;
-				current->isNodefull = false;
+				current->isNodeFull = false;
 
 				current->parent->perms[0] = get_node_index(current->parent->nodeChildren[1]);
 				current->parent->perms[1] = get_node_index(current->parent->nodeChildren[2]);
 				current->parent->perms[2] = get_node_index(current->parent->nodeChildren[3]);
 				current->parent->indexUsed++;
-				current->parent->isNodefull = true;
+				current->parent->isNodeFull = true;
 
 			}
 		}
@@ -351,12 +319,12 @@ using namespace std;
 				rootNode->nodeChildren[0]->parent = rootNode;
 				rootNode->nodeChildren[0]->leafChildren[2] = NULL;
 				rootNode->nodeChildren[0]->leafChildren[3] = NULL;
-				rootNode->nodeChildren[0]->perm[1] = 0;
-				rootNode->nodeChildren[0]->perm[2] = 0;
+				rootNode->nodeChildren[0]->perms[1] = 0;
+				rootNode->nodeChildren[0]->perms[2] = 0;
 				rootNode->nodeChildren[0]->indexUsed = 1;
-				rootNode->nodeChildren[0]->isNodefull = false;
+				rootNode->nodeChildren[0]->isNodeFull = false;
 
-				rootNode->perm[0] = rootNode->nodeChildren[1]->leafChildren[0]->getSmallerPerm();
+				rootNode->perms[0] = rootNode->nodeChildren[1]->leafChildren[0]->getSmallerPerm();
 				rootNode->indexUsed++;
 
 			}else if(current->isAboveLeaf == false){
@@ -368,28 +336,28 @@ using namespace std;
 				rootNode->nodeChildren[1]->isAboveLeaf = false;
 				rootNode->nodeChildren[1]->parent = rootNode;
 				rootNode->nodeChildren[1]->nodeChildren[0] = current->nodeChildren[2];
-				rootNode->nodeChildren[1]-nodeChildren[0]->parent = rootNode->nodeChildren[1];
+				rootNode->nodeChildren[1]->nodeChildren[0]->parent = rootNode->nodeChildren[1];
 				rootNode->nodeChildren[1]->nodeChildren[1] = current->nodeChildren[3];
-				rootNode->nodeChildren[1]-nodeChildren[1]->parent = rootNode->nodeChildren[1];
+				rootNode->nodeChildren[1]->nodeChildren[1]->parent = rootNode->nodeChildren[1];
 				rootNode->nodeChildren[1]->perms[0] = get_node_index(rootNode->nodeChildren[1]->nodeChildren[1]);				//error
 				rootNode->nodeChildren[1]->indexUsed++;
 
 				rootNode->nodeChildren[0] = current;
 				rootNode->nodeChildren[0]->parent = rootNode;
 				rootNode->nodeChildren[0]->nodeChildren[2] = NULL;
-				rootNode->nodeChildren[0]-nodeChildren[3] = NULL;
+				rootNode->nodeChildren[0]->nodeChildren[3] = NULL;
 				rootNode->nodeChildren[0]->perms[1] = 0;
 				rootNode->nodeChildren[0]->perms[2] = 0;
 				rootNode->nodeChildren[0]->indexUsed = 1;
-				rootNode->nodeChildren[0]->isNodefull = false;
+				rootNode->nodeChildren[0]->isNodeFull = false;
 
-				rootNode->perm[0] = get_node_index(rootNode->nodeChildren[1]);
+				rootNode->perms[0] = get_node_index(rootNode->nodeChildren[1]);
 				rootNode->indexUsed++;
 
 			}
 
 		}else{
-			if(current->parent->isNodefull == false){
+			if(current->parent->isNodeFull == false){
 
 				break_when_parent_not_full(current);
 		
@@ -408,7 +376,7 @@ using namespace std;
 
 		int perm = user.get_perm();
 
-		if (root->isAboveLeaf == true) {                    // at the level of node that above leaves; base case
+		if (root->isAboveLeaf == true) {                   // at the level of node that above leaves; base case
 
 			if (root->indexUsed ==
 			    1) {                        // if there is only one index available, which means this node has 2 children leaves
@@ -421,7 +389,7 @@ using namespace std;
 
 						root->leafChildren[0]->insert(user);
 
-						root->leafChildren[0]-isLeafFull = true;
+						root->leafChildren[0]->isLeafFull = true;
 
 					} else {                                                    // if the correct leaf is full
 						if (perm >
@@ -451,11 +419,11 @@ using namespace std;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+						root->perms[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+						root->perms[1] = root->leafChildren[2]->getSmallerPerm();
 
-						indexUsed++;
+						root->indexUsed++;
 
 					}
 
@@ -466,7 +434,7 @@ using namespace std;
 
 						root->leafChildren[1]->insert(user);
 
-						root->leafChildren[1]-isLeafFull = true;
+						root->leafChildren[1]->isLeafFull = true;
 
 					} else {                                                        //if the correct leaf is full
 
@@ -476,7 +444,7 @@ using namespace std;
 							root->leafChildren[2] = new treeLeaf(
 									*(root->leafChildren[1]->userTwo));            // push the existing larger user to new leaf
 
-							root->leafChildren[1] - userTwo = new userInfo(user);
+							root->leafChildren[1] -> userTwo = new userInfo(user);
 
 						} else if (perm >
 						           root->leafChildren[1]->getLargerPerm()) {            // the case that the perm is greater than the larger user
@@ -486,11 +454,11 @@ using namespace std;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+						root->perms[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+						root->perms[1] = root->leafChildren[2]->getSmallerPerm();
 
-						indexUsed++;
+						root->indexUsed++;
 
 					}
 
@@ -505,7 +473,7 @@ using namespace std;
 
 						root->leafChildren[0]->insert(user);
 
-						root->leafChildren[0]-isLeafFull = true;
+						root->leafChildren[0]->isLeafFull = true;
 
 					} else {                                                            // if it is full
 
@@ -540,25 +508,26 @@ using namespace std;
 
 						}
 
-						root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+						root->perms[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-						root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+						root->perms[1] = root->leafChildren[2]->getSmallerPerm();
 
-						root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+						root->perms[2] = root->leafChildren[3]->getSmallerPerm();
 
-						indexUsed++;
+						root->indexUsed++;
 
-						isNodeFull = true;
+						root->isNodeFull = true;
+
 					}
 
-					else if (perm > perms[0] && perm < perms[1]) {            // goes to the second leaf(in between)
+				} else if ((perm > root->perms[0]) and (perm < root->perms[1])) {            // goes to the second leaf(in between)
 
 						if (root->leafChildren[1]->isLeafFull ==
 						    false) {                    // if it is not full, just insert
 
 							root->leafChildren[1]->insert(user);
 
-							root->leafChildren[1]-isLeafFull = true;
+							root->leafChildren[1]->isLeafFull = true;
 
 						} else {                                                            // if it is full
 
@@ -578,15 +547,15 @@ using namespace std;
 
 							}
 
-							root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+							root->perms[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+							root->perms[1] = root->leafChildren[2]->getSmallerPerm();
 
-							root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+							root->perms[2] = root->leafChildren[3]->getSmallerPerm();
 
-							indexUsed++;
+							root->indexUsed++;
 
-							isNodeFull = true;
+							root->isNodeFull = true;
 
 						}
 
@@ -597,7 +566,7 @@ using namespace std;
 
 							root->leafChildren[2]->insert(user);
 
-							root->leafChildren[2]-isLeafFull = true;
+							root->leafChildren[2]->isLeafFull = true;
 
 						} else {
 
@@ -613,19 +582,21 @@ using namespace std;
 
 							}
 
-							root->perm[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
+							root->perms[0] = root->leafChildren[1]->getSmallerPerm();                                                            // adjust index
 
-							root->perm[1] = root->leafChildren[2]->getSmallerPerm();
+							root->perms[1] = root->leafChildren[2]->getSmallerPerm();
 
-							root->perm[2] = root->leafChildren[3]->getSmallerPerm();
+							root->perms[2] = root->leafChildren[3]->getSmallerPerm();
 
-							indexUsed++;
+							root->indexUsed++;
 
-							isNodeFull = true;
+							root->isNodeFull = true;
 
 						}
 
-					}else if (root->indexUsed == 3) {
+					}
+
+			}else if (root->indexUsed == 3) {
 
 						if (perm < root->perms[0]) {
 
@@ -634,7 +605,7 @@ using namespace std;
 
 								root->leafChildren[0]->insert(user);
 
-								root->leafChildren[0]-isLeafFull = true;
+								root->leafChildren[0]->isLeafFull = true;
 
 							} else {
 
@@ -644,14 +615,14 @@ using namespace std;
 
 							}
 
-						} else if (perm >= perms[0] && perm < perms[1]) {
+						} else if (perm >= root->perms[0] && perm < root->perms[1]) {
 
 							if (root->leafChildren[1]->isLeafFull ==
 							    false) {                    // if it is not full, just insert
 
 								root->leafChildren[1]->insert(user);
 
-								root->leafChildren[1]-isLeafFull = true;
+								root->leafChildren[1]->isLeafFull = true;
 
 							} else {
 
@@ -661,14 +632,14 @@ using namespace std;
 
 							}
 
-						} else if (perm >= perms[1] && perm < perms[2]) {
+						} else if (perm >= root->perms[1] && perm < root->perms[2]) {
 
 							if (root->leafChildren[2]->isLeafFull ==
 							    false) {                    // if it is not full, just insert
 
 								root->leafChildren[2]->insert(user);
 
-								root->leafChildren[2]-isLeafFull = true;
+								root->leafChildren[2]->isLeafFull = true;
 
 							} else {
 
@@ -685,7 +656,7 @@ using namespace std;
 
 								root->leafChildren[3]->insert(user);
 
-								root->leafChildren[3]-isLeafFull = true;
+								root->leafChildren[3]->isLeafFull = true;
 
 							} else {
 
@@ -694,35 +665,33 @@ using namespace std;
 								find_and_insert(user, root);
 
 							}
-
 						}
-
 					}
 
-				} else {
+			} else {
 
 					if (perm < root->perms[0]) {
 
 						find_and_insert(user, root->nodeChildren[0]);
 
-					} else if (perm > root->perms[indexUsed - 1]) {
+					} else if (perm > root->perms[root->indexUsed - 1]) {
 
-						find_and_insert(user, root->nodeChildren[indexUsed]);
+						find_and_insert(user, root->nodeChildren[root->indexUsed]);
 
-					} else if (indexUsed == 2) {
+					} else if (root->indexUsed == 2) {
 
 						if (perm >= root->perms[0] && perm < root->perms[1]) {
 
 							find_and_insert(user, root->nodeChildren[1]);
 						}
 
-					} else if (indexUsed == 3) {
+					} else if (root->indexUsed == 3) {
 
 						if (perm >= root->perms[0] && perm < root->perms[1]) {
 
 							find_and_insert(user, root->nodeChildren[1]);
 
-						} else if (perm >= perms[1] && perm < perms[2]) {
+						} else if (perm >= root->perms[1] && perm < root->perms[2]) {
 
 							find_and_insert(user, root->nodeChildren[2]);
 
@@ -730,8 +699,8 @@ using namespace std;
 					}
 				}
 			}
-		}
-	}
+		
+	
 
 	userInfo B_Tree:: get_userInfo(int perm) {
 		userInfo user;

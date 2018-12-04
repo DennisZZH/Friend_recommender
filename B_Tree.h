@@ -9,43 +9,18 @@
 #include <string>
 
 #include "userInfo.h"
+#include "treeNode.h"
+#include "treeLeaf.h"
 
 using namespace std;
 
 class userInfo;
 
+class treeNode;
+
+class treeLeaf;
+
 class B_Tree{
-
-struct treeNode{
-	struct treeLeaf; 
-
-	treeNode();
-
-	int perms[3];
-	treeNode* nodeChildren[4];
-	treeLeaf* leafChildren[4];
-	bool isAboveLeaf = true;
-	bool isNodeFull = false;
-	int indexUsed = 0;
-
-	treeNode* parent = NULL;
-};
-
-struct treeLeaf{
-
-	treeLeaf(userInfo user);			// invariant: userone must always be smaller than usertwo
-
-	void insert(userInfo user);
-
-	int getSmallerPerm();						// return the smaller perm
-
-	int getLargerPerm();						// return the larger perm
-
-	userInfo* userOne;
-	userInfo* userTwo;
-	bool isLeafFull = false;
-
-};
 
 public:
 

@@ -28,7 +28,7 @@ public:
 
 private:
 	user* userObject;
-	int GraphIndex = 0;
+	int GraphIndex;
 
 };
 #endif
