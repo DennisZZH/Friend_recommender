@@ -34,7 +34,7 @@ int main() {
 			case 'a':
 				std::cout << "Input file.\n";
 				cout << "Inputting the file...\n";
-				Recommender.InputFile("/Users/alphajun/Downloads/users_friendship.txt");
+				Recommender.InputFile("users_friendship.txt");
 				cout << "Done!\n";
 				break;
 			case 'b':
