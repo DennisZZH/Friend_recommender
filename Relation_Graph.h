@@ -19,7 +19,7 @@ public:
 	Relation_Graph() = default;		//constructor
 	void insert_relation(int MyPerm, vector<int> friends);
 	int get_index(int Perm);
-	void print_graph_test();
+	//void print_graph_test();
 
 };
 #endif

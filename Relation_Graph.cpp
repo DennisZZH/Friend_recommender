@@ -33,7 +33,7 @@ int Relation_Graph:: get_index(int Perm) {
 	return -1;  //not found
 }
 
-void Relation_Graph:: print_graph_test() {
+/* void Relation_Graph:: print_graph_test() {
 	for (vector<int> entry : friendship_graph) {
 		for (int element : entry) {
 			cout << element << "->";
@@ -41,3 +41,4 @@ void Relation_Graph:: print_graph_test() {
 		cout << "\n";
 	}
 }
+*/

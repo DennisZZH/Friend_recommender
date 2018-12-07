@@ -61,37 +61,33 @@ void friendRecommender:: InputFile(const string &reference) {
 }
 
 void friendRecommender:: add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends) {
-  
     graph->insert_relation(perm, friends);
     int index = graph->get_index(perm);
     userInfo user(perm, name, genre1, genre2, index);
-    //cout<<"Inside friendRecommender!!!!!!!!!!!!!!!!  "<<perm<<"; "<<name<<"; "<<endl;
     tree->add_user(user);
-   // cout<<"Inside friendRecommender!!!!!!!!!!!!!!!!  "<<perm<<"; "<<name<<"; "<<endl;
 }
 
 bool friendRecommender:: find_a_user(int perm) {
-	if(tree->find_user(perm) == false){
-         cout<<"FAILED! User with perm "<<perm<<" NOT FOUND!"<<endl;
+	if (!tree->find_user(perm)) {
+         cout << "FAILED! User with perm " << perm << " NOT FOUND!" << endl;
          return false;
-    }else{
-        cout<<"SUCCEED! User with perm "<<perm<<" FOUND!"<<endl;
+    } else {
+        cout << "SUCCEED! User with perm " << perm << " FOUND!" << endl;
         return true;
     }
 }
 
 void friendRecommender:: find_a_user_details(int perm) {
-    if(find_a_user(perm) == false){
-        cout<<"User with perm "<<perm<<" NOT FOUND!"<<endl;
-    }else{
-        cout<<tree->get_userInfo(perm).get_perm()<<";"<<tree->get_userInfo(perm).get_name()<<";"<<tree->get_userInfo(perm).get_genre1()<<";"<<tree->get_userInfo(perm).get_genre2()<<";";
+    if (!find_a_user(perm)) {
+        cout << "User with perm " << perm << " NOT FOUND!" << endl;
+    } else {
+        cout << tree->get_userInfo(perm).get_perm() << ";" << tree->get_userInfo(perm).get_name() << ";" << tree->get_userInfo(perm).get_genre1() << ";" << tree->get_userInfo(perm).get_genre2() << ";";
 
         vector<int> friends = graph->friendship_graph[tree->get_userInfo(perm).get_graph_index()];
-        for (auto i = friends.begin(); i !=friends.end(); i++) {
+        for (auto i = friends.begin() + 1; i !=friends.end(); i++) {
             cout << *i << ";";
-    
         }
-        cout<<endl;
+        cout << endl;
     }
 }
 
@@ -103,6 +99,10 @@ void friendRecommender:: find_a_user_details(int perm) {
     queue<int> queue;
     queue.push(perm);
     vector<bool> visited;
+    visited.resize(2 * graph->friendship_graph.size());
+    for (int i = 0; i <= graph->friendship_graph.size(); i++) {
+    	visited[i] = false;
+    }
     visited[perm] = true;
 
     while (!queue.empty()) {
