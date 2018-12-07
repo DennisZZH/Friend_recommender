@@ -39,8 +39,8 @@ int main() {
 				break;
 			case 'b':
 				std::cout << "Add a user.\n";
-				cout << "Input perm:\n"; cin >> perm;
-				cout << "Input name:\n"; cin >> name;
+				cout << "Input perm:\n"; cin >> perm; cin.ignore();
+				cout << "Input name:\n"; getline(cin, name);
 				cout << "Input genre1:\n"; cin >> genre1;
 				cout << "Input genre2:\n"; cin >> genre2;
 				cout << "Input friends:\n"; cin >> friends;

@@ -22,22 +22,26 @@ void friendRecommender:: InputFile(const string &reference) {
 	}
 	string Word;
 	while (file >> Word) {
+		name = "";
 		vector<int> ParsedFriends;
 		ParseNext = Word;
 
-		cout << ParseNext << "... \n";        // print out the current input line
+		cout << ParseNext;        // print out the current input line
 
 		NextSemicolonIndex = ParseNext.find(';');
 		perm = stoi(ParseNext.substr(0, NextSemicolonIndex));
 
 		if (ParseNext.find_last_of(';') == NextSemicolonIndex) {
+			name += ParseNext.substr(NextSemicolonIndex + 1, ParseNext.length() - NextSemicolonIndex) + " ";
 			file >> ParseNext;
+			cout << " " << ParseNext << "\n";
 		}
 		else {
 			ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
+			cout << "\n";
 		}
 		NextSemicolonIndex = ParseNext.find(';');
-		name = ParseNext.substr(0, NextSemicolonIndex);
+		name += ParseNext.substr(0, NextSemicolonIndex);
 
 		ParseNext = string(ParseNext.begin() + NextSemicolonIndex + 1, ParseNext.end());
 		NextSemicolonIndex = ParseNext.find(';');
