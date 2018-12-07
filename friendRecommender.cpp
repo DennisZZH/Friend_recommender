@@ -24,7 +24,9 @@ void friendRecommender:: InputFile(const string &reference) {
 	while (file >> Word) {
 		vector<int> ParsedFriends;
 		ParseNext = Word;
-		cout << ParseNext << "... \n";
+
+		cout << ParseNext << "... \n";        // print out the current input line
+
 		NextSemicolonIndex = ParseNext.find(';');
 		perm = stoi(ParseNext.substr(0, NextSemicolonIndex));
 
@@ -59,21 +61,38 @@ void friendRecommender:: InputFile(const string &reference) {
 }
 
 void friendRecommender:: add_a_user(int perm, string name, string genre1, string genre2, vector<int> friends) {
+  
     graph->insert_relation(perm, friends);
     int index = graph->get_index(perm);
     userInfo user(perm, name, genre1, genre2, index);
+    //cout<<"Inside friendRecommender!!!!!!!!!!!!!!!!  "<<perm<<"; "<<name<<"; "<<endl;
     tree->add_user(user);
+   // cout<<"Inside friendRecommender!!!!!!!!!!!!!!!!  "<<perm<<"; "<<name<<"; "<<endl;
 }
 
 bool friendRecommender:: find_a_user(int perm) {
-	graph->print_graph_test();
+	if(tree->find_user(perm) == false){
+         cout<<"FAILED! User with perm "<<perm<<" NOT FOUND!"<<endl;
+         return false;
+    }else{
+        cout<<"SUCCEED! User with perm "<<perm<<" FOUND!"<<endl;
+        return true;
+    }
 }
 
 void friendRecommender:: find_a_user_details(int perm) {
-	cout << graph->get_index(perm);
-	for (auto i = graph->friendship_graph[perm].begin(); i !=graph->friendship_graph[perm].end(); i++) {
-		cout << *i << ", ";
-	}
+    if(find_a_user(perm) == false){
+        cout<<"User with perm "<<perm<<" NOT FOUND!"<<endl;
+    }else{
+        cout<<tree->get_userInfo(perm).get_perm()<<";"<<tree->get_userInfo(perm).get_name()<<";"<<tree->get_userInfo(perm).get_genre1()<<";"<<tree->get_userInfo(perm).get_genre2()<<";";
+
+        vector<int> friends = graph->friendship_graph[tree->get_userInfo(perm).get_graph_index()];
+        for (auto i = friends.begin(); i !=friends.end(); i++) {
+            cout << *i << ";";
+    
+        }
+        cout<<endl;
+    }
 }
 
  void friendRecommender:: recommend_friends(int perm) {
